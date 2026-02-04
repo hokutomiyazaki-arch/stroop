@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="ストループ課題 - 前頭前野を活性化する認知トレーニング">
+    <title>ストループ課題</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="FNT512.png">
+    <link rel="icon" type="image/png" href="FNT512.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            touch-action: none;
+            overscroll-behavior: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000000;
+            color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+        }
+
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            padding: 20px;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .splash-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .splash-logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            border-radius: 20px;
+        }
+
+        .splash-brand {
+            font-size: 18px;
+            color: #FFFFFF;
+            margin-bottom: 15px;
+        }
+
+        .splash-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #FFFFFF;
+            margin-bottom: 30px;
+        }
+
+        .splash-copyright {
+            position: absolute;
+            bottom: calc(20px + env(safe-area-inset-bottom));
+            font-size: 12px;
+            color: #AAAAAA;
+        }
+
+        .main-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+            background: #000000;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: #111111;
+            flex-shrink: 0;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        .app-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FFFFFF;
+        }
+
+        .menu-btn {
+            background: #333333;
+            border: 2px solid #FFFFFF;
+            color: #FFFFFF;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            position: relative;
+            background: #000000;
+        }
+
+        .start-screen {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            padding: 10px;
+        }
+
+        .start-screen h2 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: #FFFFFF;
+        }
+
+        .mode-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .mode-btn {
+            background: #222222;
+            border: 3px solid #666666;
+            color: #FFFFFF;
+            padding: 12px 8px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .mode-btn.selected {
+            background: #333333;
+            border-color: #00FF00;
+        }
+
+        .mode-btn .mode-icon {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .mode-btn .mode-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #FFFFFF;
+        }
+
+        .description {
+            background: #222222;
+            border: 2px solid #444444;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: left;
+            line-height: 1.7;
+            font-size: 14px;
+            max-height: 200px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            touch-action: auto !important;
+            color: #FFFFFF;
+        }
+
+        .description * { touch-action: auto !important; }
+
+        .description h3 {
+            color: #00FF00;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .description strong {
+            color: #FFFF00;
+        }
+
+        .start-btn {
+            background: #00AA00;
+            border: 3px solid #00FF00;
+            color: #FFFFFF;
+            padding: 16px 45px;
+            border-radius: 30px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .play-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+        }
+
+        .play-screen.active { display: flex; }
+
+        .play-header {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            padding: 10px;
+            background: #111111;
+            border: 2px solid #333333;
+            border-radius: 12px;
+        }
+
+        .stat-item { text-align: center; }
+
+        .stat-label {
+            font-size: 12px;
+            color: #AAAAAA;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00FF00;
+        }
+
+        .play-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .current-mode {
+            font-size: 14px;
+            color: #FFFFFF;
+            background: #333333;
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+
+        .quit-btn {
+            background: #660000;
+            border: 2px solid #FF0000;
+            color: #FF0000;
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .stimulus-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .stimulus-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 150px;
+        }
+
+        .stimulus-word {
+            font-size: 70px;
+            font-weight: bold;
+        }
+
+        /* 数値ストループ */
+        .number-stimulus {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .number-item {
+            font-weight: bold;
+            color: #FFFF00;
+        }
+
+        .number-vs {
+            font-size: 24px;
+            color: #FFFFFF;
+            font-weight: bold;
+        }
+
+        /* 方向ストループ */
+        .direction-stimulus {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .arrow-display {
+            font-size: 100px;
+            color: #FFFFFF;
+        }
+
+        .direction-word {
+            font-size: 36px;
+            color: #FFFF00;
+            font-weight: bold;
+        }
+
+        /* 空間位置ストループ */
+        .spatial-container {
+            width: 100%;
+            height: 150px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: #111111;
+            border: 3px solid #444444;
+            border-radius: 12px;
+        }
+
+        .spatial-word {
+            position: absolute;
+            font-size: 42px;
+            font-weight: bold;
+            color: #FFFF00;
+        }
+
+        .spatial-word.left { left: 8%; }
+        .spatial-word.center { left: 50%; transform: translateX(-50%); }
+        .spatial-word.right { right: 8%; }
+
+        /* カウントストループ */
+        .count-stimulus {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .count-digit {
+            font-size: 55px;
+            font-weight: bold;
+            color: #FFFF00;
+        }
+
+        /* 感情ストループ */
+        .emotion-stimulus {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .emotion-face {
+            font-size: 100px;
+        }
+
+        .emotion-word {
+            font-size: 36px;
+            font-weight: bold;
+            color: #FFFF00;
+        }
+
+        .instruction {
+            font-size: 15px;
+            color: #FFFFFF;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
+        .answer-buttons {
+            display: grid;
+            gap: 10px;
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+        }
+
+        .answer-buttons.grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .answer-buttons.grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .answer-buttons.grid-4 { grid-template-columns: repeat(2, 1fr); }
+
+        .answer-btn {
+            padding: 18px 14px;
+            border-width: 4px;
+            border-style: solid;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            background: #111111;
+        }
+
+        .answer-btn:active { transform: scale(0.95); }
+
+        /* 超高コントラスト配色 */
+        .answer-btn.red { color: #FF0000; border-color: #FF0000; background: #330000; }
+        .answer-btn.blue { color: #00AAFF; border-color: #00AAFF; background: #002233; }
+        .answer-btn.green { color: #00FF00; border-color: #00FF00; background: #003300; }
+        .answer-btn.yellow { color: #FFFF00; border-color: #FFFF00; background: #333300; }
+        .answer-btn.default { color: #FFFFFF; border-color: #FFFFFF; background: #222222; }
+
+        .feedback {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 100px;
+            font-weight: bold;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .feedback.correct { color: #00FF00; }
+        .feedback.incorrect { color: #FF0000; }
+        .feedback.show { opacity: 1; }
+
+        .result-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            max-width: 500px;
+            width: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            touch-action: auto !important;
+        }
+
+        .result-screen * { touch-action: auto !important; }
+        .result-screen.active { display: flex; }
+
+        .result-screen h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #FFFFFF;
+        }
+
+        .result-stats {
+            background: #111111;
+            border: 2px solid #444444;
+            border-radius: 16px;
+            padding: 20px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #333333;
+            font-size: 16px;
+        }
+
+        .result-item:last-child { border-bottom: none; }
+        .result-item span:first-child { color: #AAAAAA; }
+        .result-item span:last-child { font-weight: bold; color: #00FF00; }
+
+        .result-grade {
+            font-size: 26px;
+            margin-bottom: 20px;
+            padding: 14px 28px;
+            background: #222222;
+            border: 2px solid #444444;
+            border-radius: 12px;
+            color: #FFFFFF;
+        }
+
+        .result-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .retry-btn {
+            background: #00AA00;
+            border: 3px solid #00FF00;
+            color: #FFFFFF;
+            padding: 14px 35px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .home-btn {
+            background: #222222;
+            border: 2px solid #666666;
+            color: #FFFFFF;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* サイドメニュー */
+        .side-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 1000;
+        }
+
+        .side-menu-overlay.active { opacity: 1; visibility: visible; }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 300px;
+            max-width: 85%;
+            height: 100%;
+            background: #111111;
+            transition: right 0.3s ease;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            touch-action: auto !important;
+        }
+
+        .side-menu.active { right: 0; }
+        .side-menu * { touch-action: auto !important; }
+
+        .side-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 2px solid #333333;
+            background: #000000;
+        }
+
+        .side-menu-header h3 { font-size: 18px; color: #FFFFFF; }
+
+        .close-menu-btn {
+            background: #333333;
+            border: 2px solid #FFFFFF;
+            color: #FFFFFF;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px 12px;
+            border-radius: 8px;
+        }
+
+        .side-menu-content {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .menu-section { margin-bottom: 25px; }
+
+        .menu-section h4 {
+            color: #00FF00;
+            margin-bottom: 12px;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .menu-mode-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .menu-mode-btn {
+            background: #222222;
+            border: 2px solid #444444;
+            color: #FFFFFF;
+            padding: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+        }
+
+        .menu-mode-btn.selected {
+            background: #333333;
+            border-color: #00FF00;
+        }
+
+        .menu-mode-btn .mode-emoji {
+            font-size: 22px;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #333333;
+        }
+
+        .menu-item label { font-size: 15px; color: #FFFFFF; }
+
+        .menu-select {
+            background: #222222;
+            border: 2px solid #666666;
+            color: #FFFFFF;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .info-panel {
+            background: #222222;
+            border: 2px solid #333333;
+            border-radius: 10px;
+            padding: 12px;
+            line-height: 1.6;
+            font-size: 13px;
+            color: #FFFFFF;
+        }
+
+        .info-panel strong { color: #FFFF00; }
+
+        .footer {
+            text-align: center;
+            padding: 8px;
+            font-size: 11px;
+            color: #888888;
+            background: #111111;
+            flex-shrink: 0;
+        }
+
+        .countdown {
+            font-size: 100px;
+            font-weight: bold;
+            color: #00FF00;
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .hidden { display: none !important; }
+
+        .install-prompt {
+            position: fixed;
+            bottom: calc(20px + env(safe-area-inset-bottom));
+            left: 50%;
+            transform: translateX(-50%);
+            background: #00AA00;
+            border: 2px solid #00FF00;
+            color: #FFFFFF;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 100;
+            display: none;
+        }
+
+        .install-prompt.show { display: block; }
+
+        .confirm-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .confirm-dialog.active { display: flex; }
+
+        .confirm-box {
+            background: #111111;
+            border: 3px solid #666666;
+            border-radius: 16px;
+            padding: 25px;
+            max-width: 320px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .confirm-box h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #FFFFFF;
+        }
+
+        .confirm-box p {
+            font-size: 15px;
+            color: #AAAAAA;
+            margin-bottom: 20px;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .confirm-btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .confirm-btn.cancel {
+            background: #333333;
+            color: #FFFFFF;
+            border: 2px solid #666666;
+        }
+
+        .confirm-btn.confirm {
+            background: #AA0000;
+            color: #FFFFFF;
+            border: 2px solid #FF0000;
+        }
+    </style>
+</head>
+<body>
+    <div class="splash-screen" id="splashScreen">
+        <img src="FNT512.png" alt="FNT Logo" class="splash-logo">
+        <div class="splash-brand">Functional Neuro Training</div>
+        <div class="splash-title">ストループ課題</div>
+        <div class="splash-copyright">© Functional Neuro Training</div>
+    </div>
+
+    <div class="main-container" id="mainContainer" style="opacity: 0;">
+        <header class="header">
+            <div class="logo-section">
+                <img src="FNT512-transparent.png" alt="FNT" class="header-logo">
+                <span class="app-title">ストループ課題</span>
+            </div>
+            <button class="menu-btn" id="menuBtn">☰ メニュー</button>
+        </header>
+
+        <main class="game-area">
+            <div class="start-screen" id="startScreen">
+                <h2>ストループ課題</h2>
+                
+                <div class="mode-selector" id="modeSelector">
+                    <button class="mode-btn selected" data-mode="color">
+                        <span class="mode-icon">🎨</span>
+                        <span class="mode-name">色-文字</span>
+                    </button>
+                    <button class="mode-btn" data-mode="number">
+                        <span class="mode-icon">🔢</span>
+                        <span class="mode-name">数値サイズ</span>
+                    </button>
+                    <button class="mode-btn" data-mode="direction">
+                        <span class="mode-icon">➡️</span>
+                        <span class="mode-name">方向</span>
+                    </button>
+                    <button class="mode-btn" data-mode="spatial">
+                        <span class="mode-icon">📍</span>
+                        <span class="mode-name">空間位置</span>
+                    </button>
+                    <button class="mode-btn" data-mode="count">
+                        <span class="mode-icon">🔄</span>
+                        <span class="mode-name">カウント</span>
+                    </button>
+                    <button class="mode-btn" data-mode="emotion">
+                        <span class="mode-icon">😊</span>
+                        <span class="mode-name">感情</span>
+                    </button>
+                </div>
+
+                <div class="description" id="modeDescription">
+                    <h3>🧠 色-文字ストループ</h3>
+                    <p><strong>活性化領域：</strong>前帯状皮質、背外側前頭前野</p>
+                    <p><strong>課題：</strong>文字の「インクの色」を答えてください。</p>
+                    <p><strong>例：</strong><span style="color:#FF0000">青</span>と表示されたら「赤」と答えます。</p>
+                </div>
+
+                <button class="start-btn" id="startBtn">スタート</button>
+            </div>
+
+            <div class="play-screen" id="playScreen">
+                <div class="play-header">
+                    <div class="stats-bar">
+                        <div class="stat-item">
+                            <div class="stat-label">問題</div>
+                            <div class="stat-value"><span id="currentTrial">0</span>/<span id="totalTrials">20</span></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">正解</div>
+                            <div class="stat-value" id="correctCount">0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">平均RT</div>
+                            <div class="stat-value"><span id="avgRT">---</span>ms</div>
+                        </div>
+                    </div>
+                    <div class="play-controls">
+                        <div class="current-mode" id="currentModeLabel">色-文字</div>
+                        <button class="quit-btn" id="quitBtn">終了</button>
+                    </div>
+                </div>
+
+                <div class="stimulus-area">
+                    <div class="stimulus-container" id="stimulusContainer"></div>
+                    <div class="instruction" id="instruction">インクの色を選んでください</div>
+                </div>
+
+                <div class="answer-buttons grid-4" id="answerButtons"></div>
+                <div class="feedback" id="feedback"></div>
+            </div>
+
+            <div class="result-screen" id="resultScreen">
+                <h2>トレーニング結果</h2>
+                <div class="result-stats">
+                    <div class="result-item"><span>モード</span><span id="resultMode">---</span></div>
+                    <div class="result-item"><span>正解数</span><span id="resultCorrect">---</span></div>
+                    <div class="result-item"><span>正答率</span><span id="resultAccuracy">---</span></div>
+                    <div class="result-item"><span>平均反応時間</span><span id="resultAvgRT">---</span></div>
+                    <div class="result-item"><span>一致条件RT</span><span id="resultCongruentRT">---</span></div>
+                    <div class="result-item"><span>不一致条件RT</span><span id="resultIncongruentRT">---</span></div>
+                    <div class="result-item"><span>ストループ効果</span><span id="resultStroopEffect">---</span></div>
+                </div>
+                <div class="result-grade" id="resultGrade">評価: ---</div>
+                <div class="result-buttons">
+                    <button class="retry-btn" id="retryBtn">もう一度</button>
+                    <button class="home-btn" id="homeBtn">モード選択に戻る</button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">© Functional Neuro Training</footer>
+    </div>
+
+    <div class="confirm-dialog" id="confirmDialog">
+        <div class="confirm-box">
+            <h3>トレーニングを終了しますか？</h3>
+            <p>現在の進捗で結果を表示します。</p>
+            <div class="confirm-buttons">
+                <button class="confirm-btn cancel" id="cancelQuit">続ける</button>
+                <button class="confirm-btn confirm" id="confirmQuit">終了</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="side-menu-overlay" id="sideMenuOverlay"></div>
+    <nav class="side-menu" id="sideMenu">
+        <div class="side-menu-header">
+            <h3>設定</h3>
+            <button class="close-menu-btn" id="closeMenuBtn">×</button>
+        </div>
+        <div class="side-menu-content">
+            <div class="menu-section">
+                <h4>モード選択</h4>
+                <div class="menu-mode-list" id="menuModeList">
+                    <button class="menu-mode-btn selected" data-mode="color"><span class="mode-emoji">🎨</span>色-文字</button>
+                    <button class="menu-mode-btn" data-mode="number"><span class="mode-emoji">🔢</span>数値サイズ</button>
+                    <button class="menu-mode-btn" data-mode="direction"><span class="mode-emoji">➡️</span>方向</button>
+                    <button class="menu-mode-btn" data-mode="spatial"><span class="mode-emoji">📍</span>空間位置</button>
+                    <button class="menu-mode-btn" data-mode="count"><span class="mode-emoji">🔄</span>カウント</button>
+                    <button class="menu-mode-btn" data-mode="emotion"><span class="mode-emoji">😊</span>感情</button>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <h4>設定</h4>
+                <div class="menu-item">
+                    <label>問題数</label>
+                    <select class="menu-select" id="trialCountSelect">
+                        <option value="10">10問</option>
+                        <option value="20" selected>20問</option>
+                        <option value="30">30問</option>
+                        <option value="50">50問</option>
+                    </select>
+                </div>
+                <div class="menu-item">
+                    <label>難易度</label>
+                    <select class="menu-select" id="difficultySelect">
+                        <option value="easy">簡単</option>
+                        <option value="normal" selected>普通</option>
+                        <option value="hard">難しい</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <h4>解説</h4>
+                <div class="info-panel">
+                    <p><strong>色-文字：</strong>前帯状皮質の訓練</p>
+                    <p><strong>数値サイズ：</strong>頭頂間溝の活性化</p>
+                    <p><strong>方向：</strong>前頭眼野の強化</p>
+                    <p><strong>空間位置：</strong>頭頂葉の訓練</p>
+                    <p><strong>カウント：</strong>前頭前野の抑制</p>
+                    <p><strong>感情：</strong>扁桃体の連携改善</p>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="install-prompt" id="installPrompt">📲 ホーム画面に追加</div>
+
+    <script>
+        const MODES = {
+            color: {
+                name: '色-文字',
+                description: `<h3>🧠 色-文字ストループ</h3><p><strong>活性化領域：</strong>前帯状皮質、背外側前頭前野</p><p><strong>課題：</strong>文字の「インクの色」を答えてください。</p><p><strong>例：</strong><span style="color:#FF0000">青</span>と表示されたら「赤」と答えます。</p>`,
+                instruction: 'インクの色を選んでください',
+                buttons: [
+                    { id: 'red', label: '赤', class: 'red' },
+                    { id: 'blue', label: '青', class: 'blue' },
+                    { id: 'green', label: '緑', class: 'green' },
+                    { id: 'yellow', label: '黄', class: 'yellow' }
+                ],
+                gridClass: 'grid-4'
+            },
+            number: {
+                name: '数値サイズ',
+                description: `<h3>🧠 数値サイズストループ</h3><p><strong>活性化領域：</strong>頭頂間溝、前頭前野</p><p><strong>課題：</strong>「数値が大きい方」を選んでください。文字サイズは無視。</p>`,
+                instruction: '数値が大きい方を選んでください',
+                buttons: [
+                    { id: 'left', label: '左', class: 'default' },
+                    { id: 'right', label: '右', class: 'default' }
+                ],
+                gridClass: 'grid-2'
+            },
+            direction: {
+                name: '方向',
+                description: `<h3>🧠 方向ストループ</h3><p><strong>活性化領域：</strong>頭頂葉、前頭眼野</p><p><strong>課題：</strong>矢印の「向き」を答えてください。文字と選択肢の矢印は無視。</p>`,
+                instruction: '矢印の向きを選んでください',
+                buttons: [
+                    { id: 'left', label: '→ 左', class: 'default' },
+                    { id: 'up', label: '↓ 上', class: 'default' },
+                    { id: 'down', label: '↑ 下', class: 'default' },
+                    { id: 'right', label: '← 右', class: 'default' }
+                ],
+                gridClass: 'grid-4'
+            },
+            spatial: {
+                name: '空間位置',
+                description: `<h3>🧠 空間ストループ</h3><p><strong>活性化領域：</strong>頭頂葉、前頭前野</p><p><strong>課題：</strong>文字の「表示位置」を答えてください。文字の意味は無視。選択肢の位置も毎回変わります。</p>`,
+                instruction: '文字の表示位置を選んでください',
+                buttons: [
+                    { id: 'left', label: '左', class: 'default' },
+                    { id: 'center', label: '中央', class: 'default' },
+                    { id: 'right', label: '右', class: 'default' }
+                ],
+                gridClass: 'grid-3',
+                shuffleButtons: true
+            },
+            count: {
+                name: 'カウント',
+                description: `<h3>🧠 カウントストループ</h3><p><strong>活性化領域：</strong>前頭前野、頭頂葉</p><p><strong>課題：</strong>数字の「個数」を答えてください。数字の値は無視。</p>`,
+                instruction: '数字の個数を選んでください',
+                buttons: [
+                    { id: '1', label: '1個', class: 'default' },
+                    { id: '2', label: '2個', class: 'default' },
+                    { id: '3', label: '3個', class: 'default' },
+                    { id: '4', label: '4個', class: 'default' }
+                ],
+                gridClass: 'grid-4'
+            },
+            emotion: {
+                name: '感情',
+                description: `<h3>🧠 感情ストループ</h3><p><strong>活性化領域：</strong>扁桃体、前頭前野</p><p><strong>課題：</strong>表情の「感情」を答えてください。文字は無視。</p>`,
+                instruction: '表情の感情を選んでください',
+                buttons: [
+                    { id: 'happy', label: '嬉しい', class: 'default' },
+                    { id: 'sad', label: '悲しい', class: 'default' },
+                    { id: 'angry', label: '怒り', class: 'default' },
+                    { id: 'surprised', label: '驚き', class: 'default' }
+                ],
+                gridClass: 'grid-4'
+            }
+        };
+
+        const COLORS = {
+            red: { name: '赤', hex: '#FF0000' },
+            blue: { name: '青', hex: '#00AAFF' },
+            green: { name: '緑', hex: '#00FF00' },
+            yellow: { name: '黄', hex: '#FFFF00' }
+        };
+        const COLOR_KEYS = Object.keys(COLORS);
+
+        const DIRECTIONS = { left: { arrow: '←', word: '左' }, right: { arrow: '→', word: '右' }, up: { arrow: '↑', word: '上' }, down: { arrow: '↓', word: '下' } };
+        const DIRECTION_KEYS = Object.keys(DIRECTIONS);
+
+        const POSITIONS = ['left', 'center', 'right'];
+        const POSITION_WORDS = { left: '左', center: '中央', right: '右' };
+
+        const EMOTIONS = { happy: { emoji: '😊', word: '嬉しい' }, sad: { emoji: '😢', word: '悲しい' }, angry: { emoji: '😠', word: '怒り' }, surprised: { emoji: '😲', word: '驚き' } };
+        const EMOTION_KEYS = Object.keys(EMOTIONS);
+
+        let audioContext = null;
+        let gameState = { mode: 'color', isPlaying: false, currentTrial: 0, totalTrials: 20, correctCount: 0, reactionTimes: [], congruentRTs: [], incongruentRTs: [], startTime: 0, difficulty: 'normal', currentStimulus: null };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.getElementById('splashScreen').classList.add('hidden');
+                document.getElementById('mainContainer').style.opacity = '1';
+            }, 2000);
+            setupEventListeners();
+            initAudio();
+            setupInstallPrompt();
+            preventScroll();
+            registerServiceWorker();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('menuBtn').addEventListener('click', () => { document.getElementById('sideMenu').classList.add('active'); document.getElementById('sideMenuOverlay').classList.add('active'); });
+            document.getElementById('closeMenuBtn').addEventListener('click', closeMenu);
+            document.getElementById('sideMenuOverlay').addEventListener('click', closeMenu);
+            document.getElementById('startBtn').addEventListener('click', startGame);
+            document.getElementById('retryBtn').addEventListener('click', () => { document.getElementById('resultScreen').classList.remove('active'); startGame(); });
+            document.getElementById('homeBtn').addEventListener('click', () => { document.getElementById('resultScreen').classList.remove('active'); document.getElementById('playScreen').classList.remove('active'); document.getElementById('startScreen').classList.remove('hidden'); });
+            document.getElementById('quitBtn').addEventListener('click', () => { gameState.isPlaying = false; document.getElementById('confirmDialog').classList.add('active'); });
+            document.getElementById('cancelQuit').addEventListener('click', () => { document.getElementById('confirmDialog').classList.remove('active'); gameState.isPlaying = true; });
+            document.getElementById('confirmQuit').addEventListener('click', () => { document.getElementById('confirmDialog').classList.remove('active'); endGame(); });
+            document.querySelectorAll('#modeSelector .mode-btn').forEach(btn => btn.addEventListener('click', () => selectMode(btn.dataset.mode)));
+            document.querySelectorAll('#menuModeList .menu-mode-btn').forEach(btn => btn.addEventListener('click', () => { selectMode(btn.dataset.mode); closeMenu(); }));
+            document.getElementById('trialCountSelect').addEventListener('change', e => { gameState.totalTrials = parseInt(e.target.value); document.getElementById('totalTrials').textContent = gameState.totalTrials; });
+            document.getElementById('difficultySelect').addEventListener('change', e => { gameState.difficulty = e.target.value; });
+        }
+
+        function closeMenu() { document.getElementById('sideMenu').classList.remove('active'); document.getElementById('sideMenuOverlay').classList.remove('active'); }
+
+        function preventScroll() {
+            document.body.addEventListener('touchmove', e => { if (!e.target.closest('.side-menu-content, .info-panel, .description, .result-screen')) e.preventDefault(); }, { passive: false });
+        }
+
+        function initAudio() {
+            const init = () => { if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)(); if (audioContext.state === 'suspended') audioContext.resume(); playTone(0, 0.001); document.removeEventListener('touchstart', init); document.removeEventListener('click', init); };
+            document.addEventListener('touchstart', init); document.addEventListener('click', init);
+        }
+
+        function playTone(f, d, t = 'sine') { if (!audioContext) return; try { const o = audioContext.createOscillator(), g = audioContext.createGain(), c = audioContext.createDynamicsCompressor(); o.type = t; o.frequency.setValueAtTime(f, audioContext.currentTime); g.gain.setValueAtTime(0.3, audioContext.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + d); o.connect(g); g.connect(c); c.connect(audioContext.destination); o.start(); o.stop(audioContext.currentTime + d); } catch (e) {} }
+
+        function selectMode(mode) {
+            gameState.mode = mode;
+            document.querySelectorAll('#modeSelector .mode-btn').forEach(btn => btn.classList.toggle('selected', btn.dataset.mode === mode));
+            document.querySelectorAll('#menuModeList .menu-mode-btn').forEach(btn => btn.classList.toggle('selected', btn.dataset.mode === mode));
+            document.getElementById('modeDescription').innerHTML = MODES[mode].description;
+        }
+
+        function startGame() {
+            gameState.currentTrial = 0; gameState.correctCount = 0; gameState.reactionTimes = []; gameState.congruentRTs = []; gameState.incongruentRTs = [];
+            document.getElementById('currentTrial').textContent = '0'; document.getElementById('correctCount').textContent = '0'; document.getElementById('avgRT').textContent = '---';
+            const container = document.getElementById('answerButtons'), mode = MODES[gameState.mode];
+            container.className = `answer-buttons ${mode.gridClass}`; container.innerHTML = '';
+            mode.buttons.forEach(btn => { const b = document.createElement('button'); b.className = `answer-btn ${btn.class}`; b.dataset.answer = btn.id; b.textContent = btn.label; b.addEventListener('click', handleAnswer); container.appendChild(b); });
+            document.getElementById('startScreen').classList.add('hidden'); document.getElementById('playScreen').classList.add('active');
+            document.getElementById('currentModeLabel').textContent = MODES[gameState.mode].name;
+            document.getElementById('instruction').textContent = MODES[gameState.mode].instruction;
+            showCountdown(3);
+        }
+
+        function showCountdown(n) {
+            const c = document.getElementById('stimulusContainer');
+            if (n > 0) { c.innerHTML = `<div class="countdown">${n}</div>`; playTone(440, 0.1); setTimeout(() => showCountdown(n - 1), 1000); }
+            else { gameState.isPlaying = true; nextTrial(); }
+        }
+
+        function nextTrial() {
+            if (gameState.currentTrial >= gameState.totalTrials) { endGame(); return; }
+            gameState.currentTrial++; document.getElementById('currentTrial').textContent = gameState.currentTrial;
+            const s = generateStimulus(); gameState.currentStimulus = s; renderStimulus(s);
+            
+            // 空間位置モードの場合、選択肢の位置をシャッフル
+            if (gameState.mode === 'spatial') {
+                shuffleAnswerButtons();
+            }
+            
+            gameState.startTime = performance.now();
+            document.querySelectorAll('.answer-btn').forEach(btn => { btn.disabled = false; btn.style.opacity = '1'; });
+        }
+
+        function shuffleAnswerButtons() {
+            const container = document.getElementById('answerButtons');
+            const btns = Array.from(container.children);
+            // Fisher-Yatesシャッフル
+            for (let i = btns.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [btns[i], btns[j]] = [btns[j], btns[i]];
+            }
+            container.innerHTML = '';
+            btns.forEach(btn => container.appendChild(btn));
+        }
+
+        function generateStimulus() {
+            const cp = gameState.difficulty === 'easy' ? 0.7 : gameState.difficulty === 'hard' ? 0.2 : 0.4;
+            const isCongruent = Math.random() < cp;
+            switch (gameState.mode) {
+                case 'color': { const wi = Math.floor(Math.random() * 4), w = COLOR_KEYS[wi]; let ci; if (isCongruent) ci = wi; else do { ci = Math.floor(Math.random() * 4); } while (ci === wi); return { type: 'color', word: w, color: COLOR_KEYS[ci], correctAnswer: COLOR_KEYS[ci], isCongruent }; }
+                case 'number': { const ns = [1,2,3,4,5,6,7,8,9], l = ns[Math.floor(Math.random()*9)]; let r; do { r = ns[Math.floor(Math.random()*9)]; } while (r === l); const bv = l > r ? 'left' : 'right'; return { type: 'number', leftNum: l, rightNum: r, biggerSize: isCongruent ? bv : (bv === 'left' ? 'right' : 'left'), correctAnswer: bv, isCongruent }; }
+                case 'direction': { const di = Math.floor(Math.random() * 4), ad = DIRECTION_KEYS[di]; let wd; if (isCongruent) wd = ad; else do { wd = DIRECTION_KEYS[Math.floor(Math.random() * 4)]; } while (wd === ad); return { type: 'direction', arrowDir: ad, wordDir: wd, correctAnswer: ad, isCongruent }; }
+                case 'spatial': { const pi = Math.floor(Math.random() * 3), p = POSITIONS[pi]; let wm; if (isCongruent) wm = p; else do { wm = POSITIONS[Math.floor(Math.random() * 3)]; } while (wm === p); return { type: 'spatial', position: p, wordMeaning: wm, correctAnswer: p, isCongruent }; }
+                case 'count': { const cnt = Math.floor(Math.random() * 4) + 1; let d; if (isCongruent) d = cnt; else do { d = Math.floor(Math.random() * 4) + 1; } while (d === cnt); return { type: 'count', count: cnt, digit: d, correctAnswer: String(cnt), isCongruent }; }
+                case 'emotion': { const ei = Math.floor(Math.random() * 4), e = EMOTION_KEYS[ei]; let w; if (isCongruent) w = e; else do { w = EMOTION_KEYS[Math.floor(Math.random() * 4)]; } while (w === e); return { type: 'emotion', emotion: e, word: w, correctAnswer: e, isCongruent }; }
+            }
+        }
+
+        function renderStimulus(s) {
+            const c = document.getElementById('stimulusContainer');
+            switch (s.type) {
+                case 'color': c.innerHTML = `<div class="stimulus-word" style="color:${COLORS[s.color].hex}">${COLORS[s.word].name}</div>`; break;
+                case 'number': c.innerHTML = `<div class="number-stimulus"><span class="number-item" style="font-size:${s.biggerSize==='left'?'70px':'40px'}">${s.leftNum}</span><span class="number-vs">vs</span><span class="number-item" style="font-size:${s.biggerSize==='right'?'70px':'40px'}">${s.rightNum}</span></div>`; break;
+                case 'direction': c.innerHTML = `<div class="direction-stimulus"><div class="arrow-display">${DIRECTIONS[s.arrowDir].arrow}</div><div class="direction-word">${DIRECTIONS[s.wordDir].word}</div></div>`; break;
+                case 'spatial': c.innerHTML = `<div class="spatial-container"><div class="spatial-word ${s.position}">${POSITION_WORDS[s.wordMeaning]}</div></div>`; break;
+                case 'count': c.innerHTML = `<div class="count-stimulus">${Array(s.count).fill(`<span class="count-digit">${s.digit}</span>`).join('')}</div>`; break;
+                case 'emotion': c.innerHTML = `<div class="emotion-stimulus"><div class="emotion-face">${EMOTIONS[s.emotion].emoji}</div><div class="emotion-word">${EMOTIONS[s.word].word}</div></div>`; break;
+            }
+        }
+
+        function handleAnswer(e) {
+            if (!gameState.isPlaying) return;
+            const a = e.target.dataset.answer, rt = Math.round(performance.now() - gameState.startTime), ok = a === gameState.currentStimulus.correctAnswer;
+            document.querySelectorAll('.answer-btn').forEach(btn => { btn.disabled = true; btn.style.opacity = '0.5'; });
+            gameState.reactionTimes.push(rt);
+            if (gameState.currentStimulus.isCongruent) gameState.congruentRTs.push(rt); else gameState.incongruentRTs.push(rt);
+            const fb = document.getElementById('feedback');
+            if (ok) { gameState.correctCount++; document.getElementById('correctCount').textContent = gameState.correctCount; fb.textContent = '○'; fb.className = 'feedback correct show'; playTone(880, 0.15); }
+            else { fb.textContent = '×'; fb.className = 'feedback incorrect show'; playTone(220, 0.3, 'square'); }
+            if (gameState.reactionTimes.length > 0) document.getElementById('avgRT').textContent = Math.round(gameState.reactionTimes.reduce((a,b)=>a+b,0)/gameState.reactionTimes.length);
+            setTimeout(() => { fb.classList.remove('show'); nextTrial(); }, 500);
+        }
+
+        function endGame() {
+            gameState.isPlaying = false;
+            document.getElementById('playScreen').classList.remove('active'); document.getElementById('resultScreen').classList.add('active');
+            const n = gameState.currentTrial, acc = n > 0 ? Math.round(gameState.correctCount / n * 100) : 0;
+            const avg = gameState.reactionTimes.length > 0 ? Math.round(gameState.reactionTimes.reduce((a,b)=>a+b,0)/gameState.reactionTimes.length) : 0;
+            const crt = gameState.congruentRTs.length > 0 ? Math.round(gameState.congruentRTs.reduce((a,b)=>a+b,0)/gameState.congruentRTs.length) : null;
+            const irt = gameState.incongruentRTs.length > 0 ? Math.round(gameState.incongruentRTs.reduce((a,b)=>a+b,0)/gameState.incongruentRTs.length) : null;
+            const se = crt && irt ? irt - crt : null;
+            document.getElementById('resultMode').textContent = MODES[gameState.mode].name;
+            document.getElementById('resultCorrect').textContent = `${gameState.correctCount}/${n}`;
+            document.getElementById('resultAccuracy').textContent = `${acc}%`;
+            document.getElementById('resultAvgRT').textContent = `${avg}ms`;
+            document.getElementById('resultCongruentRT').textContent = crt ? `${crt}ms` : '---';
+            document.getElementById('resultIncongruentRT').textContent = irt ? `${irt}ms` : '---';
+            document.getElementById('resultStroopEffect').textContent = se !== null ? `${se}ms` : '---';
+            let g = '🔄 練習あるのみ'; if (n < 5) g = '⏸️ データ不足'; else if (acc >= 95 && avg < 600) g = '🏆 エキスパート'; else if (acc >= 90 && avg < 800) g = '⭐ 優秀'; else if (acc >= 80 && avg < 1000) g = '👍 良好'; else if (acc >= 70) g = '📈 継続推奨';
+            document.getElementById('resultGrade').textContent = `評価: ${g}`;
+            playTone(523.25, 0.2); setTimeout(() => playTone(659.25, 0.2), 150); setTimeout(() => playTone(783.99, 0.3), 300);
+        }
+
+        let deferredPrompt = null;
+        function setupInstallPrompt() {
+            window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; document.getElementById('installPrompt').classList.add('show'); });
+            document.getElementById('installPrompt').addEventListener('click', async () => { if (!deferredPrompt) return; deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; document.getElementById('installPrompt').classList.remove('show'); });
+            window.addEventListener('appinstalled', () => document.getElementById('installPrompt').classList.remove('show'));
+        }
+
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').then(r => r.addEventListener('updatefound', () => { const w = r.installing; w.addEventListener('statechange', () => { if (w.state === 'installed' && navigator.serviceWorker.controller && confirm('新しいバージョンがあります。更新しますか？')) { w.postMessage({ type: 'SKIP_WAITING' }); window.location.reload(); } }); })).catch(() => {});
+        }
+    </script>
+</body>
+</html>
