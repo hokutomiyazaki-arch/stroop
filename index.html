@@ -164,18 +164,34 @@
             color: #FFFFFF;
         }
 
+        .mode-category {
+            margin-bottom: 15px;
+        }
+
+        .category-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #00FF00;
+            text-align: left;
+            margin-bottom: 8px;
+            padding-left: 5px;
+        }
+
         .mode-selector {
             display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        #reframingSelector {
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
         }
 
         .mode-btn {
             background: #222222;
             border: 3px solid #666666;
             color: #FFFFFF;
-            padding: 12px 8px;
+            padding: 10px 6px;
             border-radius: 12px;
             cursor: pointer;
         }
@@ -186,13 +202,13 @@
         }
 
         .mode-btn .mode-icon {
-            font-size: 28px;
+            font-size: 24px;
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .mode-btn .mode-name {
-            font-size: 14px;
+            font-size: 11px;
             font-weight: bold;
             color: #FFFFFF;
         }
@@ -439,6 +455,7 @@
         .answer-buttons.grid-2 { grid-template-columns: repeat(2, 1fr); }
         .answer-buttons.grid-3 { grid-template-columns: repeat(3, 1fr); }
         .answer-buttons.grid-4 { grid-template-columns: repeat(2, 1fr); }
+        .answer-buttons.grid-2x2 { grid-template-columns: 1fr; gap: 8px; }
 
         .answer-btn {
             padding: 18px 14px;
@@ -449,6 +466,35 @@
             font-weight: bold;
             cursor: pointer;
             background: #111111;
+        }
+
+        .answer-btn.reframing-btn {
+            padding: 14px 12px;
+            font-size: 14px;
+            font-weight: normal;
+            text-align: left;
+            line-height: 1.4;
+            color: #FFFFFF;
+            border-color: #444444;
+            background: #1a1a1a;
+        }
+
+        .answer-btn.reframing-btn:active {
+            background: #2a2a2a;
+        }
+
+        /* リフレーミングプロンプト */
+        .reframing-prompt {
+            font-size: 22px;
+            font-weight: bold;
+            color: #FF6666;
+            text-align: center;
+            padding: 20px;
+            line-height: 1.5;
+            background: rgba(255, 100, 100, 0.1);
+            border-radius: 12px;
+            border: 2px solid #FF6666;
+            margin-bottom: 10px;
         }
 
         .answer-btn:active { transform: scale(0.95); }
@@ -819,35 +865,52 @@
             <div class="start-screen" id="startScreen">
                 <h2>ストループ課題</h2>
                 
-                <div class="mode-selector" id="modeSelector">
-                    <button class="mode-btn selected" data-mode="color">
-                        <span class="mode-icon">🎨</span>
-                        <span class="mode-name">色-文字</span>
-                    </button>
-                    <button class="mode-btn" data-mode="number">
-                        <span class="mode-icon">🔢</span>
-                        <span class="mode-name">数値サイズ</span>
-                    </button>
-                    <button class="mode-btn" data-mode="direction">
-                        <span class="mode-icon">➡️</span>
-                        <span class="mode-name">方向</span>
-                    </button>
-                    <button class="mode-btn" data-mode="spatial">
-                        <span class="mode-icon">📍</span>
-                        <span class="mode-name">空間位置</span>
-                    </button>
-                    <button class="mode-btn" data-mode="count">
-                        <span class="mode-icon">🔄</span>
-                        <span class="mode-name">カウント</span>
-                    </button>
-                    <button class="mode-btn" data-mode="emotion">
-                        <span class="mode-icon">😊</span>
-                        <span class="mode-name">感情</span>
-                    </button>
-                    <button class="mode-btn" data-mode="emotional">
-                        <span class="mode-icon">💔</span>
-                        <span class="mode-name">情動</span>
-                    </button>
+                <div class="mode-category">
+                    <div class="category-title">🧠 ストループ課題</div>
+                    <div class="mode-selector" id="modeSelector">
+                        <button class="mode-btn selected" data-mode="color">
+                            <span class="mode-icon">🎨</span>
+                            <span class="mode-name">色-文字</span>
+                        </button>
+                        <button class="mode-btn" data-mode="number">
+                            <span class="mode-icon">🔢</span>
+                            <span class="mode-name">数値サイズ</span>
+                        </button>
+                        <button class="mode-btn" data-mode="direction">
+                            <span class="mode-icon">➡️</span>
+                            <span class="mode-name">方向</span>
+                        </button>
+                        <button class="mode-btn" data-mode="spatial">
+                            <span class="mode-icon">📍</span>
+                            <span class="mode-name">空間位置</span>
+                        </button>
+                        <button class="mode-btn" data-mode="count">
+                            <span class="mode-icon">🔄</span>
+                            <span class="mode-name">カウント</span>
+                        </button>
+                        <button class="mode-btn" data-mode="emotion">
+                            <span class="mode-icon">😊</span>
+                            <span class="mode-name">感情</span>
+                        </button>
+                        <button class="mode-btn" data-mode="emotional">
+                            <span class="mode-icon">💔</span>
+                            <span class="mode-name">情動</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mode-category">
+                    <div class="category-title">💚 リフレーミング</div>
+                    <div class="mode-selector" id="reframingSelector">
+                        <button class="mode-btn" data-mode="affirmation">
+                            <span class="mode-icon">💚</span>
+                            <span class="mode-name">アファメーション</span>
+                        </button>
+                        <button class="mode-btn" data-mode="somatic">
+                            <span class="mode-icon">💙</span>
+                            <span class="mode-name">身体感覚</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="description" id="modeDescription">
@@ -936,7 +999,7 @@
         </div>
         <div class="side-menu-content">
             <div class="menu-section">
-                <h4>モード選択</h4>
+                <h4>🧠 ストループ課題</h4>
                 <div class="menu-mode-list" id="menuModeList">
                     <button class="menu-mode-btn selected" data-mode="color"><span class="mode-emoji">🎨</span>色-文字</button>
                     <button class="menu-mode-btn" data-mode="number"><span class="mode-emoji">🔢</span>数値サイズ</button>
@@ -945,6 +1008,14 @@
                     <button class="menu-mode-btn" data-mode="count"><span class="mode-emoji">🔄</span>カウント</button>
                     <button class="menu-mode-btn" data-mode="emotion"><span class="mode-emoji">😊</span>感情</button>
                     <button class="menu-mode-btn" data-mode="emotional"><span class="mode-emoji">💔</span>情動</button>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <h4>💚 リフレーミング</h4>
+                <div class="menu-mode-list" id="menuReframingList">
+                    <button class="menu-mode-btn" data-mode="affirmation"><span class="mode-emoji">💚</span>アファメーション</button>
+                    <button class="menu-mode-btn" data-mode="somatic"><span class="mode-emoji">💙</span>身体感覚</button>
                 </div>
             </div>
 
@@ -972,6 +1043,7 @@
             <div class="menu-section">
                 <h4>解説</h4>
                 <div class="info-panel">
+                    <p><strong>【ストループ】</strong></p>
                     <p><strong>色-文字：</strong>前帯状皮質の訓練</p>
                     <p><strong>数値サイズ：</strong>頭頂間溝の活性化</p>
                     <p><strong>方向：</strong>前頭眼野の強化</p>
@@ -979,6 +1051,9 @@
                     <p><strong>カウント：</strong>前頭前野の抑制</p>
                     <p><strong>感情：</strong>扁桃体の連携改善</p>
                     <p><strong>情動：</strong>扁桃体・島皮質の訓練</p>
+                    <p style="margin-top:10px;"><strong>【リフレーミング】</strong></p>
+                    <p><strong>アファメーション：</strong>認知再構成</p>
+                    <p><strong>身体感覚：</strong>内受容感覚の調整</p>
                 </div>
             </div>
         </div>
@@ -1070,6 +1145,22 @@
                 ],
                 gridClass: 'grid-4'
             },
+            affirmation: {
+                name: 'アファメーション',
+                description: `<h3>💚 ポジティブアファメーション</h3><p><strong>目的：</strong>ネガティブな自動思考をポジティブな言葉で書き換える訓練</p><p><strong>課題：</strong>ネガティブな言葉が表示されたら、ポジティブな選択肢を素早く選んでください。</p><p><strong>効果：</strong>前頭前野の認知制御、扁桃体の情動調整</p>`,
+                instruction: 'ポジティブな言葉を選んでください',
+                buttons: [],
+                gridClass: 'grid-2x2',
+                isReframing: true
+            },
+            somatic: {
+                name: '身体感覚',
+                description: `<h3>💙 身体感覚リフレーミング</h3><p><strong>目的：</strong>体の不調への不安をポジティブな認識に書き換える訓練</p><p><strong>課題：</strong>体の不調に関する言葉が表示されたら、安心できる選択肢を素早く選んでください。</p><p><strong>効果：</strong>島皮質の内受容感覚調整、扁桃体の不安軽減</p>`,
+                instruction: '安心できる言葉を選んでください',
+                buttons: [],
+                gridClass: 'grid-2x2',
+                isReframing: true
+            },
             valence: {
                 name: '情動（感情価）',
                 description: `<h3>🧠 情動ストループ（感情価）</h3><p><strong>活性化領域：</strong>扁桃体、島皮質、前頭前野</p><p><strong>課題：</strong>単語の「感情価」を判断してください。ポジティブな意味かネガティブな意味かを答えます。文字の色は無視してください。</p><p><strong>例：</strong><span style="color:#00AAFF">幸福</span>（青色で表示）→ ポジティブ</p>`,
@@ -1106,6 +1197,114 @@
             neutral: ['机', '椅子', '本', '鉛筆', '窓', '時計', '紙', '箱', '壁', '床', '扉', '傘', '皿', '靴', '帽子']
         };
 
+        // ポジティブアファメーション用データ
+        const AFFIRMATION_DATA = {
+            negatives: [
+                '私なんか最悪だ', 'もう全部嫌だ', 'どうせ失敗する', '誰にも必要とされてない', 'また迷惑をかけた',
+                '自分が嫌い', 'もう立ち直れない', '何もできない', '全部終わりだ', '私だけダメだ',
+                'また嫌われた', '頑張っても無駄', 'どうせ分かってもらえない', '恥ずかしい', '自信がない',
+                '私は弱い', 'もう限界', '何も意味がない', 'また同じことを繰り返す', '私には価値がない',
+                '全部私のせいだ', 'どうせうまくいかない', 'もう疲れた', '私には無理', '一人ぼっちだ',
+                '失敗ばかり', '誰も助けてくれない', '何をしても足りない', 'もう嫌われてもいい', 'この世の終わりだ'
+            ],
+            negativeFollowups: [
+                ['どうせ何も変わらない', '私はいつもこうだ', '期待するだけ無駄だ'],
+                ['逃げたい', '消えてしまいたい', 'もう考えたくない'],
+                ['結果は見えている', 'また同じ結末だ', 'やる前から無理だ'],
+                ['誰も気にしていない', '居場所なんてない', 'ここにいる意味がない'],
+                ['信用もなくなる', 'もう取り返せない', 'また評価が下がる'],
+                ['好きになる理由がない', '認められない', '見たくもない'],
+                ['時間が解決しない', 'もう戻れない', '前には進めない'],
+                ['何も役に立たない', '足を引っ張るだけ', 'できない自分が情けない'],
+                ['希望はない', '先が真っ暗だ', '終わった話だ'],
+                ['周りと比べて劣っている', '私だけ取り残されている', 'どう足掻いても無理だ'],
+                ['また距離を置かれる', '期待を裏切った', '嫌われるのも当然だ'],
+                ['報われたことがない', '無意味な努力だ', '誰も見ていない'],
+                ['話すだけ無駄だ', '理解されるはずがない', '伝える価値もない'],
+                ['思い出したくない', '消したい過去だ', '見られたくなかった'],
+                ['何も信じられない', '決断できない', '前に出られない'],
+                ['すぐ折れてしまう', '耐えられない', '守れない'],
+                ['もう余力がない', 'これ以上無理だ', '崩れてしまいそう'],
+                ['何の意味も残らない', '空っぽだ', '無駄な時間だ'],
+                ['何も学んでいない', '成長していない', 'また後悔する'],
+                ['代わりはいくらでもいる', 'いなくても困らない', '数に入っていない'],
+                ['言い訳できない', '責任を逃れられない', '罰を受けるべきだ'],
+                ['成功例がない', '期待するだけ無駄だ', '悪くなる一方だ'],
+                ['立て直せない', '休んでも回復しない', 'もう動けない'],
+                ['才能がない', '向いていない', '挑戦する資格がない'],
+                ['誰にも届かない', '取り残されている', '孤立している'],
+                ['評価されない', '失点ばかりだ', '積み上がらない'],
+                ['頼る相手がいない', '見放されている', '自分で何とかするしかない'],
+                ['まだ足りない', '価値が証明できない', 'もっとやるべきだ'],
+                ['どう思われても同じだ', 'もう期待しない', '関係を切りたい'],
+                ['もう何も残らない', '終わりしか見えない', '希望は消えた']
+            ],
+            positives: [
+                '今日も私はよくやっている', '今のままでも大丈夫', '少しずつ前に進んでいる', '私には価値がある', '失敗してもやり直せる',
+                '私は私の味方だ', '今は途中なだけ', '休んでもいい', 'ここにいるだけで十分', '可能性はまだ残っている',
+                '完璧じゃなくていい', '私は成長している', '比べなくていい', '今日を乗り越えている', '安全な場所にいる',
+                '私は守られている', '小さな一歩でいい', 'ちゃんと呼吸できている', '今を生きている', 'ここから変えられる',
+                '私は一人じゃない', '今の感情は一時的だ', '自分を大切にしていい', 'これで終わりじゃない', '私は回復できる',
+                '今は選び直せる', '私は尊重される存在だ', '今日という日がある', '未来はまだ決まっていない', '私はここにいていい'
+            ]
+        };
+
+        // 身体感覚リフレーミング用データ
+        const SOMATIC_DATA = {
+            negatives: [
+                '体がつらい', 'また調子が悪い', 'ずっと疲れている', 'どこかおかしい気がする', '痛みが取れない',
+                '体が重い', '思うように動けない', 'また悪くなった', '休んでも回復しない', '先が見えない',
+                'この不調は治らない気がする', '体のことばかり考えてしまう', '何をしてもつらい', '不安で体がこわばる', '息苦しい感じがする',
+                'めまいが心配', '今日は何もできない', '体が言うことを聞かない', 'また症状が出た', '普通に過ごせない',
+                '無理してしまった', '体が限界だ', '調子のいい日がない', '外に出るのが不安', 'また悪化するかもしれない',
+                'この状態が続くのが怖い', '体に自信がない', 'どう対処すればいいか分からない', '体が敏感になっている', 'この不調に振り回されている'
+            ],
+            negativeFollowups: [
+                ['何も楽しめない', '我慢するしかない', 'いつまで続くんだろう'],
+                ['また同じだ', '良くなる気がしない', '期待しない方がいい'],
+                ['休んでも意味がない', '常に消耗している', '元気だった頃に戻れない'],
+                ['大事な病気かもしれない', '見逃してはいけない', '気にしすぎても止まらない'],
+                ['慣れるしかない', '付き合い続けるしかない', '我慢が足りないのかも'],
+                ['動くのが億劫だ', '何をするにも大変', '気力も出ない'],
+                ['周りについていけない', '迷惑をかけてしまう', '無理をするしかない'],
+                ['せっかく良くなっていたのに', '振り出しに戻った', 'がっかりする'],
+                ['体は休み方を忘れている', '回復力が落ちている', 'もう限界かもしれない'],
+                ['いつ終わるのか分からない', '希望が持てない', '想像すると不安になる'],
+                ['良くなる根拠がない', 'このままかもしれない', '期待しない方が楽だ'],
+                ['気を抜くと不安になる', '考え出すと止まらない', '頭から離れない'],
+                ['逃げ場がない', '耐えるしかない', '何をしても同じ'],
+                ['力が入ってしまう', '体が休まらない', '緊張が抜けない'],
+                ['ちゃんと呼吸できていない', '意識してしまう', '不安が増す'],
+                ['何か起きそうで怖い', '外出が心配', '予測できない'],
+                ['役に立てない', '何も進まない', '自分が嫌になる'],
+                ['思い通りにならない', '裏切られている感じがする', '信じられない'],
+                ['また繰り返す', '終わらない気がする', '振り回される'],
+                ['以前の自分じゃない', '取り戻せない', '諦めるしかない'],
+                ['無理がたたった', 'またやってしまった', '反省しかない'],
+                ['これ以上は耐えられない', '崩れてしまいそう', 'もう無理だ'],
+                ['良い日が思い出せない', '希望が薄れる', '比べてしまう'],
+                ['外が怖い', '何かあったらどうしよう', 'すぐ戻りたくなる'],
+                ['注意しないといけない', '油断できない', '常に警戒してしまう'],
+                ['先のことを考えると怖い', '抜け出せない', '想像が膨らむ'],
+                ['信頼できない', 'また裏切られそう', '無理はできない'],
+                ['正解が分からない', '迷ってばかり', '自信が持てない'],
+                ['ちょっとした変化が気になる', '過剰に反応してしまう', '落ち着かない'],
+                ['生活が振り回される', '体に支配されている', '自由がない']
+            ],
+            positives: [
+                '今この瞬間、私は安全で落ち着いている', '体は回復に向かって働いている', '私は安心できる場所にいる',
+                '呼吸は自然に流れている', '今ここに意識を向けられている', '私の体は変化できる',
+                '私は自分の体を大切にしている', '今日の体調に寄り添えている', '落ち着いた選択ができている',
+                '体は休息を受け取っている', '私はゆっくり整っている', '安心感が少しずつ広がっている',
+                '私の体には力が残っている', '今ここで呼吸が続いている', '私は回復の流れに乗っている',
+                '体は必要な調整を行っている', '私は今を感じ取れている', '穏やかな感覚が戻ってきている',
+                '私は自分を労われている', '体と心がつながっている', '私は安心を選べている',
+                '体は応えてくれている', '今ここで落ち着けている', '私は自分のペースを守れている',
+                '体は回復のプロセスにある', '私は穏やかさを感じている', '今の私に必要なことが分かっている',
+                '体は少しずつ整っている', '私は安心感を受け取っている', '今日の私はここにいて大丈夫だ'
+            ]
+        };
+
         let audioContext = null;
         let gameState = { mode: 'color', isPlaying: false, currentTrial: 0, totalTrials: 20, correctCount: 0, reactionTimes: [], congruentRTs: [], incongruentRTs: [], negativeRTs: [], positiveRTs: [], neutralRTs: [], startTime: 0, difficulty: 'normal', currentStimulus: null };
 
@@ -1131,8 +1330,8 @@
             document.getElementById('quitBtn').addEventListener('click', () => { gameState.isPlaying = false; document.getElementById('confirmDialog').classList.add('active'); });
             document.getElementById('cancelQuit').addEventListener('click', () => { document.getElementById('confirmDialog').classList.remove('active'); gameState.isPlaying = true; });
             document.getElementById('confirmQuit').addEventListener('click', () => { document.getElementById('confirmDialog').classList.remove('active'); endGame(); });
-            document.querySelectorAll('#modeSelector .mode-btn').forEach(btn => btn.addEventListener('click', () => selectMode(btn.dataset.mode)));
-            document.querySelectorAll('#menuModeList .menu-mode-btn').forEach(btn => btn.addEventListener('click', () => { selectMode(btn.dataset.mode); closeMenu(); }));
+            document.querySelectorAll('#modeSelector .mode-btn, #reframingSelector .mode-btn').forEach(btn => btn.addEventListener('click', () => selectMode(btn.dataset.mode)));
+            document.querySelectorAll('#menuModeList .menu-mode-btn, #menuReframingList .menu-mode-btn').forEach(btn => btn.addEventListener('click', () => { selectMode(btn.dataset.mode); closeMenu(); }));
             document.getElementById('trialCountSelect').addEventListener('change', e => { gameState.totalTrials = parseInt(e.target.value); document.getElementById('totalTrials').textContent = gameState.totalTrials; });
             document.getElementById('difficultySelect').addEventListener('change', e => { gameState.difficulty = e.target.value; });
         }
@@ -1152,18 +1351,43 @@
 
         function selectMode(mode) {
             gameState.mode = mode;
-            document.querySelectorAll('#modeSelector .mode-btn').forEach(btn => btn.classList.toggle('selected', btn.dataset.mode === mode));
-            document.querySelectorAll('#menuModeList .menu-mode-btn').forEach(btn => btn.classList.toggle('selected', btn.dataset.mode === mode));
+            
+            // スタート画面のボタン更新（両方のセレクター）
+            document.querySelectorAll('#modeSelector .mode-btn, #reframingSelector .mode-btn').forEach(btn => {
+                btn.classList.toggle('selected', btn.dataset.mode === mode);
+            });
+            
+            // メニューのボタン更新（両方のリスト）
+            document.querySelectorAll('#menuModeList .menu-mode-btn, #menuReframingList .menu-mode-btn').forEach(btn => {
+                btn.classList.toggle('selected', btn.dataset.mode === mode);
+            });
+            
             document.getElementById('modeDescription').innerHTML = MODES[mode].description;
         }
 
         function startGame() {
             gameState.currentTrial = 0; gameState.correctCount = 0; gameState.reactionTimes = []; gameState.congruentRTs = []; gameState.incongruentRTs = []; gameState.negativeRTs = []; gameState.positiveRTs = []; gameState.neutralRTs = [];
             document.getElementById('currentTrial').textContent = '0'; document.getElementById('correctCount').textContent = '0'; document.getElementById('avgRT').textContent = '---';
-            const container = document.getElementById('answerButtons'), mode = MODES[gameState.mode];
-            container.className = `answer-buttons ${mode.gridClass}`; container.innerHTML = '';
-            mode.buttons.forEach(btn => { const b = document.createElement('button'); b.className = `answer-btn ${btn.class}`; b.dataset.answer = btn.id; b.textContent = btn.label; b.addEventListener('click', handleAnswer); container.appendChild(b); });
-            document.getElementById('startScreen').classList.add('hidden'); document.getElementById('playScreen').classList.add('active');
+            
+            const container = document.getElementById('answerButtons');
+            const mode = MODES[gameState.mode];
+            
+            // リフレーミングモード以外は事前にボタンを生成
+            if (!mode.isReframing) {
+                container.className = `answer-buttons ${mode.gridClass}`;
+                container.innerHTML = '';
+                mode.buttons.forEach(btn => { 
+                    const b = document.createElement('button'); 
+                    b.className = `answer-btn ${btn.class}`; 
+                    b.dataset.answer = btn.id; 
+                    b.textContent = btn.label; 
+                    b.addEventListener('click', handleAnswer); 
+                    container.appendChild(b); 
+                });
+            }
+            
+            document.getElementById('startScreen').classList.add('hidden'); 
+            document.getElementById('playScreen').classList.add('active');
             document.getElementById('currentModeLabel').textContent = MODES[gameState.mode].name;
             document.getElementById('instruction').textContent = MODES[gameState.mode].instruction;
             showCountdown(3);
@@ -1212,6 +1436,8 @@
                 case 'count': { const cnt = Math.floor(Math.random() * 4) + 1; let d; if (isCongruent) d = cnt; else do { d = Math.floor(Math.random() * 4) + 1; } while (d === cnt); return { type: 'count', count: cnt, digit: d, correctAnswer: String(cnt), isCongruent }; }
                 case 'emotion': { const ei = Math.floor(Math.random() * 4), e = EMOTION_KEYS[ei]; let w; if (isCongruent) w = e; else do { w = EMOTION_KEYS[Math.floor(Math.random() * 4)]; } while (w === e); return { type: 'emotion', emotion: e, word: w, correctAnswer: e, isCongruent }; }
                 case 'emotional': { return generateEmotionalStimulus(); }
+                case 'affirmation': { return generateReframingStimulus(AFFIRMATION_DATA); }
+                case 'somatic': { return generateReframingStimulus(SOMATIC_DATA); }
             }
         }
 
@@ -1233,6 +1459,41 @@
             };
         }
 
+        function generateReframingStimulus(data) {
+            // ランダムにネガティブ文を選択
+            const idx = Math.floor(Math.random() * data.negatives.length);
+            const negativePrompt = data.negatives[idx];
+            const negativeOptions = data.negativeFollowups[idx];
+            
+            // 対応するポジティブ文を使用（同じインデックス）
+            const positiveOption = data.positives[idx];
+            
+            // 選択肢を作成（ポジティブ1つ + ネガティブ3つ）
+            let options = [
+                { text: positiveOption, isPositive: true },
+                { text: negativeOptions[0], isPositive: false },
+                { text: negativeOptions[1], isPositive: false },
+                { text: negativeOptions[2], isPositive: false }
+            ];
+            
+            // シャッフル
+            for (let i = options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [options[i], options[j]] = [options[j], options[i]];
+            }
+            
+            // 正解のインデックスを見つける
+            const correctIdx = options.findIndex(o => o.isPositive);
+            
+            return {
+                type: gameState.mode,
+                prompt: negativePrompt,
+                options: options,
+                correctAnswer: String(correctIdx),
+                isCongruent: true
+            };
+        }
+
         function renderStimulus(s) {
             const c = document.getElementById('stimulusContainer');
             switch (s.type) {
@@ -1243,7 +1504,26 @@
                 case 'count': c.innerHTML = `<div class="count-stimulus">${Array(s.count).fill(`<span class="count-digit">${s.digit}</span>`).join('')}</div>`; break;
                 case 'emotion': c.innerHTML = `<div class="emotion-stimulus"><div class="emotion-face">${EMOTIONS[s.emotion].emoji}</div><div class="emotion-word">${EMOTIONS[s.word].word}</div></div>`; break;
                 case 'emotional': c.innerHTML = `<div class="stimulus-word" style="color:${COLORS[s.color].hex}">${s.word}</div>`; break;
+                case 'affirmation':
+                case 'somatic':
+                    c.innerHTML = `<div class="reframing-prompt">${s.prompt}</div>`;
+                    renderReframingButtons(s.options);
+                    break;
             }
+        }
+
+        function renderReframingButtons(options) {
+            const container = document.getElementById('answerButtons');
+            container.className = 'answer-buttons grid-2x2';
+            container.innerHTML = '';
+            options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn reframing-btn';
+                btn.dataset.answer = String(idx);
+                btn.textContent = opt.text;
+                btn.addEventListener('click', handleAnswer);
+                container.appendChild(btn);
+            });
         }
 
         function handleAnswer(e) {
@@ -1261,10 +1541,43 @@
             }
             
             const fb = document.getElementById('feedback');
-            if (ok) { gameState.correctCount++; document.getElementById('correctCount').textContent = gameState.correctCount; fb.textContent = '○'; fb.className = 'feedback correct show'; playTone(880, 0.15); }
-            else { fb.textContent = '×'; fb.className = 'feedback incorrect show'; playTone(220, 0.3, 'square'); }
+            const isReframing = gameState.mode === 'affirmation' || gameState.mode === 'somatic';
+            
+            if (ok) { 
+                gameState.correctCount++; 
+                document.getElementById('correctCount').textContent = gameState.correctCount; 
+                
+                if (isReframing) {
+                    // リフレーミングモードでは選んだボタンを緑でハイライト
+                    e.target.style.opacity = '1';
+                    e.target.style.borderColor = '#00FF00';
+                    e.target.style.color = '#00FF00';
+                    e.target.style.background = 'rgba(0, 255, 0, 0.2)';
+                    fb.textContent = '✓';
+                } else {
+                    fb.textContent = '○';
+                }
+                fb.className = 'feedback correct show'; 
+                playTone(880, 0.15); 
+            } else { 
+                if (isReframing) {
+                    // リフレーミングモードでは正解を緑でハイライト
+                    const correctBtn = document.querySelector(`.answer-btn[data-answer="${gameState.currentStimulus.correctAnswer}"]`);
+                    if (correctBtn) {
+                        correctBtn.style.opacity = '1';
+                        correctBtn.style.borderColor = '#00FF00';
+                        correctBtn.style.color = '#00FF00';
+                        correctBtn.style.background = 'rgba(0, 255, 0, 0.2)';
+                    }
+                    fb.textContent = '';
+                } else {
+                    fb.textContent = '×'; 
+                }
+                fb.className = 'feedback incorrect show'; 
+                playTone(220, 0.3, 'square'); 
+            }
             if (gameState.reactionTimes.length > 0) document.getElementById('avgRT').textContent = Math.round(gameState.reactionTimes.reduce((a,b)=>a+b,0)/gameState.reactionTimes.length);
-            setTimeout(() => { fb.classList.remove('show'); nextTrial(); }, 500);
+            setTimeout(() => { fb.classList.remove('show'); nextTrial(); }, isReframing ? 800 : 500);
         }
 
         function endGame() {
@@ -1278,8 +1591,18 @@
             document.getElementById('resultAccuracy').textContent = `${acc}%`;
             document.getElementById('resultAvgRT').textContent = `${avg}ms`;
             
+            // リフレーミングモードの場合
+            if (gameState.mode === 'affirmation' || gameState.mode === 'somatic') {
+                document.getElementById('congruentRow').style.display = 'none';
+                document.getElementById('incongruentRow').style.display = 'none';
+                document.getElementById('stroopRow').style.display = 'none';
+                document.getElementById('negativeRow').style.display = 'none';
+                document.getElementById('positiveRow').style.display = 'none';
+                document.getElementById('neutralRow').style.display = 'none';
+                document.getElementById('emotionalEffectRow').style.display = 'none';
+            }
             // 情動ストループの場合
-            if (gameState.mode === 'emotional') {
+            else if (gameState.mode === 'emotional') {
                 document.getElementById('congruentRow').style.display = 'none';
                 document.getElementById('incongruentRow').style.display = 'none';
                 document.getElementById('stroopRow').style.display = 'none';
@@ -1315,7 +1638,19 @@
                 document.getElementById('resultStroopEffect').textContent = se !== null ? `${se}ms` : '---';
             }
             
-            let g = '🔄 練習あるのみ'; if (n < 5) g = '⏸️ データ不足'; else if (acc >= 95 && avg < 600) g = '🏆 エキスパート'; else if (acc >= 90 && avg < 800) g = '⭐ 優秀'; else if (acc >= 80 && avg < 1000) g = '👍 良好'; else if (acc >= 70) g = '📈 継続推奨';
+            let g = '🔄 練習あるのみ'; 
+            if (n < 5) g = '⏸️ データ不足'; 
+            else if (gameState.mode === 'affirmation' || gameState.mode === 'somatic') {
+                // リフレーミングモードの評価
+                if (acc >= 95) g = '💚 素晴らしい！';
+                else if (acc >= 85) g = '⭐ とても良い';
+                else if (acc >= 70) g = '👍 良い調子';
+                else g = '📈 続けましょう';
+            }
+            else if (acc >= 95 && avg < 600) g = '🏆 エキスパート'; 
+            else if (acc >= 90 && avg < 800) g = '⭐ 優秀'; 
+            else if (acc >= 80 && avg < 1000) g = '👍 良好'; 
+            else if (acc >= 70) g = '📈 継続推奨';
             document.getElementById('resultGrade').textContent = `評価: ${g}`;
             playTone(523.25, 0.2); setTimeout(() => playTone(659.25, 0.2), 150); setTimeout(() => playTone(783.99, 0.3), 300);
         }
