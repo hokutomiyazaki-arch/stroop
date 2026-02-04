@@ -844,6 +844,10 @@
                         <span class="mode-icon">😊</span>
                         <span class="mode-name">感情</span>
                     </button>
+                    <button class="mode-btn" data-mode="emotional">
+                        <span class="mode-icon">💔</span>
+                        <span class="mode-name">情動</span>
+                    </button>
                 </div>
 
                 <div class="description" id="modeDescription">
@@ -894,9 +898,13 @@
                     <div class="result-item"><span>正解数</span><span id="resultCorrect">---</span></div>
                     <div class="result-item"><span>正答率</span><span id="resultAccuracy">---</span></div>
                     <div class="result-item"><span>平均反応時間</span><span id="resultAvgRT">---</span></div>
-                    <div class="result-item"><span>一致条件RT</span><span id="resultCongruentRT">---</span></div>
-                    <div class="result-item"><span>不一致条件RT</span><span id="resultIncongruentRT">---</span></div>
-                    <div class="result-item"><span>ストループ効果</span><span id="resultStroopEffect">---</span></div>
+                    <div class="result-item" id="congruentRow"><span>一致条件RT</span><span id="resultCongruentRT">---</span></div>
+                    <div class="result-item" id="incongruentRow"><span>不一致条件RT</span><span id="resultIncongruentRT">---</span></div>
+                    <div class="result-item" id="stroopRow"><span>ストループ効果</span><span id="resultStroopEffect">---</span></div>
+                    <div class="result-item" id="negativeRow" style="display:none;"><span>ネガティブ語RT</span><span id="resultNegativeRT">---</span></div>
+                    <div class="result-item" id="positiveRow" style="display:none;"><span>ポジティブ語RT</span><span id="resultPositiveRT">---</span></div>
+                    <div class="result-item" id="neutralRow" style="display:none;"><span>ニュートラル語RT</span><span id="resultNeutralRT">---</span></div>
+                    <div class="result-item" id="emotionalEffectRow" style="display:none;"><span>情動効果</span><span id="resultEmotionalEffect">---</span></div>
                 </div>
                 <div class="result-grade" id="resultGrade">評価: ---</div>
                 <div class="result-buttons">
@@ -936,6 +944,7 @@
                     <button class="menu-mode-btn" data-mode="spatial"><span class="mode-emoji">📍</span>空間位置</button>
                     <button class="menu-mode-btn" data-mode="count"><span class="mode-emoji">🔄</span>カウント</button>
                     <button class="menu-mode-btn" data-mode="emotion"><span class="mode-emoji">😊</span>感情</button>
+                    <button class="menu-mode-btn" data-mode="emotional"><span class="mode-emoji">💔</span>情動</button>
                 </div>
             </div>
 
@@ -969,6 +978,7 @@
                     <p><strong>空間位置：</strong>頭頂葉の訓練</p>
                     <p><strong>カウント：</strong>前頭前野の抑制</p>
                     <p><strong>感情：</strong>扁桃体の連携改善</p>
+                    <p><strong>情動：</strong>扁桃体・島皮質の訓練</p>
                 </div>
             </div>
         </div>
@@ -1047,6 +1057,28 @@
                     { id: 'surprised', label: '驚き', class: 'default' }
                 ],
                 gridClass: 'grid-4'
+            },
+            emotional: {
+                name: '情動',
+                description: `<h3>🧠 情動ストループ</h3><p><strong>活性化領域：</strong>扁桃体、前帯状皮質、前頭前野</p><p><strong>課題：</strong>単語の「インクの色」を答えてください。単語の意味は無視。</p><p><strong>特徴：</strong>ネガティブな単語は注意を引きつけ、色の判断を妨げます（情動ストループ効果）。</p>`,
+                instruction: 'インクの色を選んでください（単語の意味は無視）',
+                buttons: [
+                    { id: 'red', label: '赤', class: 'red' },
+                    { id: 'blue', label: '青', class: 'blue' },
+                    { id: 'green', label: '緑', class: 'green' },
+                    { id: 'yellow', label: '黄', class: 'yellow' }
+                ],
+                gridClass: 'grid-4'
+            },
+            valence: {
+                name: '情動（感情価）',
+                description: `<h3>🧠 情動ストループ（感情価）</h3><p><strong>活性化領域：</strong>扁桃体、島皮質、前頭前野</p><p><strong>課題：</strong>単語の「感情価」を判断してください。ポジティブな意味かネガティブな意味かを答えます。文字の色は無視してください。</p><p><strong>例：</strong><span style="color:#00AAFF">幸福</span>（青色で表示）→ ポジティブ</p>`,
+                instruction: '単語の感情価を選んでください',
+                buttons: [
+                    { id: 'positive', label: '😊 ポジティブ', class: 'green' },
+                    { id: 'negative', label: '😢 ネガティブ', class: 'red' }
+                ],
+                gridClass: 'grid-2'
             }
         };
 
@@ -1067,8 +1099,15 @@
         const EMOTIONS = { happy: { emoji: '😊', word: '嬉しい' }, sad: { emoji: '😢', word: '悲しい' }, angry: { emoji: '😠', word: '怒り' }, surprised: { emoji: '😲', word: '驚き' } };
         const EMOTION_KEYS = Object.keys(EMOTIONS);
 
+        // 情動ストループ用の感情価単語
+        const VALENCE_WORDS = {
+            negative: ['恐怖', '死', '痛み', '悲惨', '孤独', '絶望', '苦痛', '不安', '怒り', '憎悪', '失敗', '病気', '危険', '悪夢', '破壊'],
+            positive: ['愛', '幸福', '喜び', '希望', '平和', '成功', '笑顔', '感謝', '優美', '楽園', '勝利', '健康', '安心', '祝福', '幸運'],
+            neutral: ['机', '椅子', '本', '鉛筆', '窓', '時計', '紙', '箱', '壁', '床', '扉', '傘', '皿', '靴', '帽子']
+        };
+
         let audioContext = null;
-        let gameState = { mode: 'color', isPlaying: false, currentTrial: 0, totalTrials: 20, correctCount: 0, reactionTimes: [], congruentRTs: [], incongruentRTs: [], startTime: 0, difficulty: 'normal', currentStimulus: null };
+        let gameState = { mode: 'color', isPlaying: false, currentTrial: 0, totalTrials: 20, correctCount: 0, reactionTimes: [], congruentRTs: [], incongruentRTs: [], negativeRTs: [], positiveRTs: [], neutralRTs: [], startTime: 0, difficulty: 'normal', currentStimulus: null };
 
         document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
@@ -1119,7 +1158,7 @@
         }
 
         function startGame() {
-            gameState.currentTrial = 0; gameState.correctCount = 0; gameState.reactionTimes = []; gameState.congruentRTs = []; gameState.incongruentRTs = [];
+            gameState.currentTrial = 0; gameState.correctCount = 0; gameState.reactionTimes = []; gameState.congruentRTs = []; gameState.incongruentRTs = []; gameState.negativeRTs = []; gameState.positiveRTs = []; gameState.neutralRTs = [];
             document.getElementById('currentTrial').textContent = '0'; document.getElementById('correctCount').textContent = '0'; document.getElementById('avgRT').textContent = '---';
             const container = document.getElementById('answerButtons'), mode = MODES[gameState.mode];
             container.className = `answer-buttons ${mode.gridClass}`; container.innerHTML = '';
@@ -1172,7 +1211,26 @@
                 case 'spatial': { const pi = Math.floor(Math.random() * 3), p = POSITIONS[pi]; let wm; if (isCongruent) wm = p; else do { wm = POSITIONS[Math.floor(Math.random() * 3)]; } while (wm === p); return { type: 'spatial', position: p, wordMeaning: wm, correctAnswer: p, isCongruent }; }
                 case 'count': { const cnt = Math.floor(Math.random() * 4) + 1; let d; if (isCongruent) d = cnt; else do { d = Math.floor(Math.random() * 4) + 1; } while (d === cnt); return { type: 'count', count: cnt, digit: d, correctAnswer: String(cnt), isCongruent }; }
                 case 'emotion': { const ei = Math.floor(Math.random() * 4), e = EMOTION_KEYS[ei]; let w; if (isCongruent) w = e; else do { w = EMOTION_KEYS[Math.floor(Math.random() * 4)]; } while (w === e); return { type: 'emotion', emotion: e, word: w, correctAnswer: e, isCongruent }; }
+                case 'emotional': { return generateEmotionalStimulus(); }
             }
+        }
+
+        function generateEmotionalStimulus() {
+            // 感情価をランダムに選択（ネガティブ、ポジティブ、ニュートラル）
+            const valenceTypes = ['negative', 'positive', 'neutral'];
+            const valence = valenceTypes[Math.floor(Math.random() * 3)];
+            const wordList = VALENCE_WORDS[valence];
+            const word = wordList[Math.floor(Math.random() * wordList.length)];
+            const color = COLOR_KEYS[Math.floor(Math.random() * 4)];
+            
+            return {
+                type: 'emotional',
+                word: word,
+                color: color,
+                valence: valence,
+                correctAnswer: color,
+                isCongruent: valence === 'neutral' // ニュートラルを基準
+            };
         }
 
         function renderStimulus(s) {
@@ -1184,6 +1242,7 @@
                 case 'spatial': c.innerHTML = `<div class="spatial-container"><div class="spatial-word ${s.position}">${POSITION_WORDS[s.wordMeaning]}</div></div>`; break;
                 case 'count': c.innerHTML = `<div class="count-stimulus">${Array(s.count).fill(`<span class="count-digit">${s.digit}</span>`).join('')}</div>`; break;
                 case 'emotion': c.innerHTML = `<div class="emotion-stimulus"><div class="emotion-face">${EMOTIONS[s.emotion].emoji}</div><div class="emotion-word">${EMOTIONS[s.word].word}</div></div>`; break;
+                case 'emotional': c.innerHTML = `<div class="stimulus-word" style="color:${COLORS[s.color].hex}">${s.word}</div>`; break;
             }
         }
 
@@ -1193,6 +1252,14 @@
             document.querySelectorAll('.answer-btn').forEach(btn => { btn.disabled = true; btn.style.opacity = '0.5'; });
             gameState.reactionTimes.push(rt);
             if (gameState.currentStimulus.isCongruent) gameState.congruentRTs.push(rt); else gameState.incongruentRTs.push(rt);
+            
+            // 情動ストループの場合、感情価別にRTを記録
+            if (gameState.mode === 'emotional' && gameState.currentStimulus.valence) {
+                if (gameState.currentStimulus.valence === 'negative') gameState.negativeRTs.push(rt);
+                else if (gameState.currentStimulus.valence === 'positive') gameState.positiveRTs.push(rt);
+                else gameState.neutralRTs.push(rt);
+            }
+            
             const fb = document.getElementById('feedback');
             if (ok) { gameState.correctCount++; document.getElementById('correctCount').textContent = gameState.correctCount; fb.textContent = '○'; fb.className = 'feedback correct show'; playTone(880, 0.15); }
             else { fb.textContent = '×'; fb.className = 'feedback incorrect show'; playTone(220, 0.3, 'square'); }
@@ -1205,16 +1272,49 @@
             document.getElementById('playScreen').classList.remove('active'); document.getElementById('resultScreen').classList.add('active');
             const n = gameState.currentTrial, acc = n > 0 ? Math.round(gameState.correctCount / n * 100) : 0;
             const avg = gameState.reactionTimes.length > 0 ? Math.round(gameState.reactionTimes.reduce((a,b)=>a+b,0)/gameState.reactionTimes.length) : 0;
-            const crt = gameState.congruentRTs.length > 0 ? Math.round(gameState.congruentRTs.reduce((a,b)=>a+b,0)/gameState.congruentRTs.length) : null;
-            const irt = gameState.incongruentRTs.length > 0 ? Math.round(gameState.incongruentRTs.reduce((a,b)=>a+b,0)/gameState.incongruentRTs.length) : null;
-            const se = crt && irt ? irt - crt : null;
+            
             document.getElementById('resultMode').textContent = MODES[gameState.mode].name;
             document.getElementById('resultCorrect').textContent = `${gameState.correctCount}/${n}`;
             document.getElementById('resultAccuracy').textContent = `${acc}%`;
             document.getElementById('resultAvgRT').textContent = `${avg}ms`;
-            document.getElementById('resultCongruentRT').textContent = crt ? `${crt}ms` : '---';
-            document.getElementById('resultIncongruentRT').textContent = irt ? `${irt}ms` : '---';
-            document.getElementById('resultStroopEffect').textContent = se !== null ? `${se}ms` : '---';
+            
+            // 情動ストループの場合
+            if (gameState.mode === 'emotional') {
+                document.getElementById('congruentRow').style.display = 'none';
+                document.getElementById('incongruentRow').style.display = 'none';
+                document.getElementById('stroopRow').style.display = 'none';
+                document.getElementById('negativeRow').style.display = 'flex';
+                document.getElementById('positiveRow').style.display = 'flex';
+                document.getElementById('neutralRow').style.display = 'flex';
+                document.getElementById('emotionalEffectRow').style.display = 'flex';
+                
+                const negRT = gameState.negativeRTs.length > 0 ? Math.round(gameState.negativeRTs.reduce((a,b)=>a+b,0)/gameState.negativeRTs.length) : null;
+                const posRT = gameState.positiveRTs.length > 0 ? Math.round(gameState.positiveRTs.reduce((a,b)=>a+b,0)/gameState.positiveRTs.length) : null;
+                const neuRT = gameState.neutralRTs.length > 0 ? Math.round(gameState.neutralRTs.reduce((a,b)=>a+b,0)/gameState.neutralRTs.length) : null;
+                const emotionalEffect = negRT && neuRT ? negRT - neuRT : null;
+                
+                document.getElementById('resultNegativeRT').textContent = negRT ? `${negRT}ms` : '---';
+                document.getElementById('resultPositiveRT').textContent = posRT ? `${posRT}ms` : '---';
+                document.getElementById('resultNeutralRT').textContent = neuRT ? `${neuRT}ms` : '---';
+                document.getElementById('resultEmotionalEffect').textContent = emotionalEffect !== null ? `${emotionalEffect}ms` : '---';
+            } else {
+                document.getElementById('congruentRow').style.display = 'flex';
+                document.getElementById('incongruentRow').style.display = 'flex';
+                document.getElementById('stroopRow').style.display = 'flex';
+                document.getElementById('negativeRow').style.display = 'none';
+                document.getElementById('positiveRow').style.display = 'none';
+                document.getElementById('neutralRow').style.display = 'none';
+                document.getElementById('emotionalEffectRow').style.display = 'none';
+                
+                const crt = gameState.congruentRTs.length > 0 ? Math.round(gameState.congruentRTs.reduce((a,b)=>a+b,0)/gameState.congruentRTs.length) : null;
+                const irt = gameState.incongruentRTs.length > 0 ? Math.round(gameState.incongruentRTs.reduce((a,b)=>a+b,0)/gameState.incongruentRTs.length) : null;
+                const se = crt && irt ? irt - crt : null;
+                
+                document.getElementById('resultCongruentRT').textContent = crt ? `${crt}ms` : '---';
+                document.getElementById('resultIncongruentRT').textContent = irt ? `${irt}ms` : '---';
+                document.getElementById('resultStroopEffect').textContent = se !== null ? `${se}ms` : '---';
+            }
+            
             let g = '🔄 練習あるのみ'; if (n < 5) g = '⏸️ データ不足'; else if (acc >= 95 && avg < 600) g = '🏆 エキスパート'; else if (acc >= 90 && avg < 800) g = '⭐ 優秀'; else if (acc >= 80 && avg < 1000) g = '👍 良好'; else if (acc >= 70) g = '📈 継続推奨';
             document.getElementById('resultGrade').textContent = `評価: ${g}`;
             playTone(523.25, 0.2); setTimeout(() => playTone(659.25, 0.2), 150); setTimeout(() => playTone(783.99, 0.3), 300);
