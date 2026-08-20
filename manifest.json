@@ -1,44 +1,57 @@
 {
-    "name": "ストループ課題 - Functional Neuro Training",
-    "short_name": "ストループ課題",
-    "description": "6種類のストループ課題で前頭前野を多角的に活性化。色-文字、数値サイズ、方向、空間位置、カウント、感情の各モードで認知制御機能を総合的に強化します。",
-    "start_url": "./index.html",
-    "scope": "./",
-    "display": "standalone",
-    "display_override": ["standalone", "fullscreen"],
-    "orientation": "portrait",
-    "background_color": "#1a1a2e",
-    "theme_color": "#1a1a2e",
-    "icons": [
+  "name": "ストループ課題 - Functional Neuro Training",
+  "short_name": "ストループ課題",
+  "description": "6種類のストループ課題で前頭前野を多角的に活性化。色-文字、数値サイズ、方向、空間位置、カウント、感情の各モードで認知制御機能を総合的に強化します。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "fullscreen"
+  ],
+  "orientation": "portrait",
+  "background_color": "#1a1a2e",
+  "theme_color": "#1a1a2e",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": [
+    "health",
+    "medical",
+    "education"
+  ],
+  "lang": "ja",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "トレーニング開始",
+      "short_name": "開始",
+      "description": "ストループ課題を開始",
+      "url": "./index.html",
+      "icons": [
         {
-            "src": "FNT512.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "any"
-        },
-        {
-            "src": "FNT512.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "maskable"
+          "src": "FNT512.png",
+          "sizes": "512x512"
         }
-    ],
-    "categories": ["health", "medical", "education"],
-    "lang": "ja",
-    "dir": "ltr",
-    "prefer_related_applications": false,
-    "shortcuts": [
-        {
-            "name": "トレーニング開始",
-            "short_name": "開始",
-            "description": "ストループ課題を開始",
-            "url": "./index.html",
-            "icons": [
-                {
-                    "src": "FNT512.png",
-                    "sizes": "512x512"
-                }
-            ]
-        }
-    ]
+      ]
+    }
+  ]
 }

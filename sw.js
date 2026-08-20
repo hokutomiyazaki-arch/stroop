@@ -1,5 +1,5 @@
 // Service Worker for Stroop Task PWA
-const CACHE_NAME = 'stroop-task-v4.1.0';
+const CACHE_NAME = 'stroop-task-v4.1.1';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
